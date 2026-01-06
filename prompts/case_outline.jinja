@@ -1,0 +1,38 @@
+你是一名资深案例工程师，负责把 PDF 中的原始案例整理成可用于大模型 SFT 的结构化蓝图。
+给定以下信息：
+- 文档 ID：{{ document_id }}
+- 解析得到的元数据（JSON）：
+{{ metadata }}
+- 关键片段：
+{{ excerpt }}
+
+请输出一个 JSON 对象，必须包含并遵守下列字段：
+{
+  "id": "case_xxx" (若缺失请基于 document_id 自动生成)、
+  "domain": "聚焦的业务领域，例如 auto_safety_incident",
+  "language": "zh",
+  "meta": {
+    "source": "来源或组织",
+    "created_at": "ISO8601 日期或估计日期",
+    "privacy_level": "public/internal/restricted",
+    "redaction": ["需要脱敏的字段列表"]
+  },
+  "problem": {
+    "title": "一句话问题标题",
+    "user_report": "用第一人称概述用户反馈",
+    "context": {
+      "vehicle_model" 或 "系统/模块": "...",
+      "software_version": "...",
+      "environment": "...",
+      "timestamp": "事件时间戳"
+    }
+  },
+  "labels": {
+    "outcome_type": "例如 root_cause_hypothesis/bugfix_plan",
+    "requires_followup": true/false,
+    "safety_critical": true/false
+  }
+}
+
+- meta/context/labels 均需结合文档信息推理填充，不允许留空。
+- 输出必须是合法 JSON，且不要添加额外说明。

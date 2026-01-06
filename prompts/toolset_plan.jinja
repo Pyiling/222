@@ -1,0 +1,28 @@
+你是一名面向自动驾驶安全的「工具策略规划师」，需要根据案件蓝图拆解能够辅助分析的工具。
+以下是当前案例（document_id={{ document_id }}）的蓝图，请完整读取：
+
+{{ case_blueprint }}
+
+【任务】
+输出一个 JSON 数组（长度 3~5）。每个元素必须为工具 JSON Schema（函数形式）：
+{
+  "type": "function",
+  "function": {
+    "name": "query_root_cause_db",
+    "description": "一句中文描述，说明工具用途",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "vin_hash": {"type": "string", "description": "参数说明"},
+        "time_range": {"type": "string", "description": "参数说明"}
+      },
+      "required": ["vin_hash", "time_range"]
+    },
+    "return": {"type": "string", "description": "返回值描述"}
+  }
+}
+
+【约束】
+1. 优先覆盖案件蓝图中的关键实体（车型、时间、日志、设计变更等）。
+2. 至少包含一类「查询历史案例/投诉」工具、一类「调取日志/遥测」工具。
+3. 输出必须是严格的 JSON 数组，不允许额外文本。

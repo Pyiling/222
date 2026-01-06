@@ -1,0 +1,822 @@
+{
+  "id": "case_sample_0",
+  "domain": "auto_safety_incident",
+  "language": "zh",
+  "meta": {
+    "source": "automotive_manufacturer",
+    "created_at": "2024-04-23",
+    "privacy_level": "internal",
+    "redaction": [
+      "XX",
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "x",
+      "*°",
+      "XXXX.XX.XX",
+      "*想",
+      "*钉",
+      "**螺栓",
+      "**脚托",
+      "*连杆",
+      "S连杆",
+      "*Cr*o4"
+    ]
+  },
+  "problem": {
+    "title": "座椅脚托收不回位问题",
+    "user_report": "我使用的车辆座椅脚托无法正常收回",
+    "context": {
+      "vehicle_model": "XX车型",
+      "software_version": "unknown",
+      "environment": "normal_driving_conditions",
+      "timestamp": "2024-04-23"
+    }
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "query_operating_conditions",
+        "description": "查询车辆工况数据并按指定维度统计，用于分析故障/操作指标。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "time_range": {
+              "type": "string",
+              "description": "时间范围或统计周期描述。"
+            },
+            "vehicle_filter": {
+              "type": "string",
+              "description": "车辆筛选条件（VIN/车型/属性/规则）。"
+            },
+            "metric_types": {
+              "type": "array",
+              "description": "工况指标类型列表。",
+              "items": {
+                "type": "string"
+              }
+            },
+            "aggregation_requirements": {
+              "type": "array",
+              "description": "统计维度与输出要求。",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "time_range",
+            "vehicle_filter"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "工况数据查询结果与统计摘要。"
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "query_historical_issues",
+        "description": "查询历史相关问题/售后案例，返回统计与明细。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query_goal": {
+              "type": "string",
+              "description": "查询目标或用途。"
+            },
+            "target_object": {
+              "type": "string",
+              "description": "故障关联对象（部件/模块/系统）。"
+            },
+            "symptom": {
+              "type": "string",
+              "description": "故障现象描述。"
+            },
+            "query_dimensions": {
+              "type": "array",
+              "description": "查询维度/筛选条件。",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "query_goal",
+            "target_object"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "历史问题查询结果与案例摘要。"
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "retrieve_domain_knowledge",
+        "description": "检索研发/制造/供应/标杆等维度的知识与信息。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "retrieval_goal": {
+              "type": "string",
+              "description": "检索目标或用途。"
+            },
+            "dimension": {
+              "type": "string",
+              "description": "检索维度，如研发/制造/供应/标杆。"
+            },
+            "items": {
+              "type": "array",
+              "description": "具体检索事项列表。",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "retrieval_goal"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "检索事项结果与关键信息摘要。"
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "on_site_investigation",
+        "description": "现场排查并验证核心事项，输出逐项排查结果与备注。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "investigation_goal": {
+              "type": "string",
+              "description": "排查目标或需验证的核心问题。"
+            },
+            "investigation_target": {
+              "type": "string",
+              "description": "排查对象，如故障件/工序/设备/人员/整车/零部件。"
+            },
+            "reference_basis": {
+              "type": "array",
+              "description": "排查依据，如图纸/工艺/质量标准/检验规范/历史案例。",
+              "items": {
+                "type": "string"
+              }
+            },
+            "validation_items": {
+              "type": "array",
+              "description": "待验证核心事项列表。",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "investigation_target"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "核心事项排查结果与备注信息。"
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "analyze_domain_principles",
+        "description": "进行专业原理分析并输出推导结论。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "analysis_type": {
+              "type": "string",
+              "description": "分析类型，如受力分析/失效机理分析。"
+            },
+            "analysis_target": {
+              "type": "string",
+              "description": "分析对象或结构/物质组合。"
+            },
+            "issue_description": {
+              "type": "string",
+              "description": "核心问题或故障现象描述。"
+            },
+            "analysis_goal": {
+              "type": "string",
+              "description": "指定分析目标，如受力路径/失效机制。"
+            }
+          },
+          "required": [
+            "analysis_type",
+            "analysis_target"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "分析结论与推导摘要。"
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_experiment_results",
+        "description": "获取实验结果并汇总实验数据或结论。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "experiment_type": {
+              "type": "string",
+              "description": "实验类型，如复现实验/验证性试验/对比分析实验。"
+            },
+            "experiment_target": {
+              "type": "string",
+              "description": "实验对象或物料。"
+            },
+            "experiment_goal": {
+              "type": "string",
+              "description": "实验目的或待验证假设。"
+            },
+            "experiment_requirements": {
+              "type": "string",
+              "description": "明确实验基础约束与结果判定依据，如环境条件/样本要求/操作规范/判定标准，确保实验可落地"
+            }
+          },
+          "required": [
+            "experiment_type",
+            "experiment_target"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "实验结果与关键数据。"
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "propose_mitigation_actions",
+        "description": "基于具体故障原因制定整改措施方案。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "root_cause": {
+              "type": "string",
+              "description": "具体故障原因。"
+            }
+          },
+          "required": [
+            "root_cause"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "整改方案措施列表。"
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "insert_information",
+        "description": "插入指定信息条目并输出对应结果。",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "insert_goal": {
+              "type": "string",
+              "description": "插入目标或用途。"
+            },
+            "items": {
+              "type": "array",
+              "description": "具体插入信息条目列表。",
+              "items": {
+                "type": "string"
+              }
+            },
+            "context": {
+              "type": "string",
+              "description": "上文内容或上下文。"
+            }
+          },
+          "required": [
+            "insert_goal"
+          ]
+        },
+        "return": {
+          "type": "string",
+          "description": "插入信息结果，与条目逐一对应。"
+        }
+      }
+    }
+  ],
+  "trajectory": [
+    {
+      "role": "assistant",
+      "inputs": {
+        "instruction": "查询历史类似座椅脚托问题案例，了解共性原因",
+        "available_tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "query_operating_conditions",
+              "description": "查询车辆工况数据并按指定维度统计，用于分析故障/操作指标。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "time_range": {
+                    "type": "string",
+                    "description": "时间范围或统计周期描述。"
+                  },
+                  "vehicle_filter": {
+                    "type": "string",
+                    "description": "车辆筛选条件（VIN/车型/属性/规则）。"
+                  },
+                  "metric_types": {
+                    "type": "array",
+                    "description": "工况指标类型列表。",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "aggregation_requirements": {
+                    "type": "array",
+                    "description": "统计维度与输出要求。",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "time_range",
+                  "vehicle_filter"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "工况数据查询结果与统计摘要。"
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "query_historical_issues",
+              "description": "查询历史相关问题/售后案例，返回统计与明细。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "query_goal": {
+                    "type": "string",
+                    "description": "查询目标或用途。"
+                  },
+                  "target_object": {
+                    "type": "string",
+                    "description": "故障关联对象（部件/模块/系统）。"
+                  },
+                  "symptom": {
+                    "type": "string",
+                    "description": "故障现象描述。"
+                  },
+                  "query_dimensions": {
+                    "type": "array",
+                    "description": "查询维度/筛选条件。",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "query_goal",
+                  "target_object"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "历史问题查询结果与案例摘要。"
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "retrieve_domain_knowledge",
+              "description": "检索研发/制造/供应/标杆等维度的知识与信息。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "retrieval_goal": {
+                    "type": "string",
+                    "description": "检索目标或用途。"
+                  },
+                  "dimension": {
+                    "type": "string",
+                    "description": "检索维度，如研发/制造/供应/标杆。"
+                  },
+                  "items": {
+                    "type": "array",
+                    "description": "具体检索事项列表。",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "retrieval_goal"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "检索事项结果与关键信息摘要。"
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "on_site_investigation",
+              "description": "现场排查并验证核心事项，输出逐项排查结果与备注。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "investigation_goal": {
+                    "type": "string",
+                    "description": "排查目标或需验证的核心问题。"
+                  },
+                  "investigation_target": {
+                    "type": "string",
+                    "description": "排查对象，如故障件/工序/设备/人员/整车/零部件。"
+                  },
+                  "reference_basis": {
+                    "type": "array",
+                    "description": "排查依据，如图纸/工艺/质量标准/检验规范/历史案例。",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "validation_items": {
+                    "type": "array",
+                    "description": "待验证核心事项列表。",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "investigation_target"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "核心事项排查结果与备注信息。"
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "analyze_domain_principles",
+              "description": "进行专业原理分析并输出推导结论。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "analysis_type": {
+                    "type": "string",
+                    "description": "分析类型，如受力分析/失效机理分析。"
+                  },
+                  "analysis_target": {
+                    "type": "string",
+                    "description": "分析对象或结构/物质组合。"
+                  },
+                  "issue_description": {
+                    "type": "string",
+                    "description": "核心问题或故障现象描述。"
+                  },
+                  "analysis_goal": {
+                    "type": "string",
+                    "description": "指定分析目标，如受力路径/失效机制。"
+                  }
+                },
+                "required": [
+                  "analysis_type",
+                  "analysis_target"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "分析结论与推导摘要。"
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "get_experiment_results",
+              "description": "获取实验结果并汇总实验数据或结论。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "experiment_type": {
+                    "type": "string",
+                    "description": "实验类型，如复现实验/验证性试验/对比分析实验。"
+                  },
+                  "experiment_target": {
+                    "type": "string",
+                    "description": "实验对象或物料。"
+                  },
+                  "experiment_goal": {
+                    "type": "string",
+                    "description": "实验目的或待验证假设。"
+                  },
+                  "experiment_requirements": {
+                    "type": "string",
+                    "description": "明确实验基础约束与结果判定依据，如环境条件/样本要求/操作规范/判定标准，确保实验可落地"
+                  }
+                },
+                "required": [
+                  "experiment_type",
+                  "experiment_target"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "实验结果与关键数据。"
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "propose_mitigation_actions",
+              "description": "基于具体故障原因制定整改措施方案。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "root_cause": {
+                    "type": "string",
+                    "description": "具体故障原因。"
+                  }
+                },
+                "required": [
+                  "root_cause"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "整改方案措施列表。"
+              }
+            }
+          },
+          {
+            "type": "function",
+            "function": {
+              "name": "insert_information",
+              "description": "插入指定信息条目并输出对应结果。",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "insert_goal": {
+                    "type": "string",
+                    "description": "插入目标或用途。"
+                  },
+                  "items": {
+                    "type": "array",
+                    "description": "具体插入信息条目列表。",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "context": {
+                    "type": "string",
+                    "description": "上文内容或上下文。"
+                  }
+                },
+                "required": [
+                  "insert_goal"
+                ]
+              },
+              "return": {
+                "type": "string",
+                "description": "插入信息结果，与条目逐一对应。"
+              }
+            }
+          }
+        ]
+      },
+      "assistant_output": {
+        "reasoning_summary": "根据案件摘要，用户报告XX车型座椅脚托无法正常收回问题。为分析此问题，需要先查询历史类似案例，了解共性原因和解决方案效果。这将有助于确定可能的故障模式并指导后续调查方向。",
+        "tool_plan": [
+          {
+            "tool_name": "query_historical_issues",
+            "tool_purpose": "查询座椅脚托收不回位的历史案例和共性问题",
+            "tool_args": {
+              "query_goal": "查询座椅脚托收不回位的历史案例和共性问题",
+              "target_object": "座椅脚托机构",
+              "symptom": "座椅脚托无法正常收回",
+              "query_dimensions": [
+                "车型",
+                "故障频率",
+                "原因类型"
+              ]
+            },
+            "action_desc": "查询历史类似座椅脚托问题案例，了解共性原因"
+          }
+        ],
+        "final": null
+      },
+      "turn_id": 1
+    },
+    {
+      "role": "tool",
+      "tool_name": "query_historical_issues",
+      "tool_args": {
+        "query_goal": "查询座椅脚托收不回位的历史案例和共性问题",
+        "target_object": "座椅脚托机构",
+        "symptom": "座椅脚托无法正常收回",
+        "query_dimensions": [
+          "车型",
+          "故障频率",
+          "原因类型"
+        ]
+      },
+      "tool_observation": {
+        "status": "ok",
+        "results": "查询到历史座椅脚托收不回位案例共15例，涉及XX车型为主。故障频率分布：低频(1-2次)占60%，中频(3-5次)占30%，高频(>5次)占10%。原因类型分析：机械卡滞(45%)、电机故障(25%)、控制单元问题(20%)、其他原因(10%)。典型案例显示，多数案例通过更换脚托连杆或调整电机参数可解决，但约15%的案例存在复发情况。",
+        "tool_results_summary": "历史案例显示座椅脚托收不回位问题主要集中于机械卡滞和电机故障，多数可通过更换部件解决，但存在一定复发率"
+      },
+      "turn_id": 2
+    },
+    {
+      "role": "assistant",
+      "inputs": {},
+      "assistant_output": {
+        "reasoning_summary": "基于历史案例查询结果，座椅脚托收不回位问题主要集中于机械卡滞(45%)和电机故障(25%)。为进一步分析故障原因，需要查询车辆实际使用工况数据，分析不同使用场景下脚托的受力情况和故障发生频率的关联性，这将有助于确定具体的故障触发条件。",
+        "tool_plan": [
+          {
+            "tool_name": "query_operating_conditions",
+            "tool_purpose": "分析车辆实际使用工况与脚托故障的关联性",
+            "tool_args": {
+              "time_range": "2024-01-01至2024-04-23",
+              "vehicle_filter": "XX车型",
+              "metric_types": [
+                "脚托使用频率",
+                "脚托受力情况",
+                "座椅调节模式"
+              ],
+              "aggregation_requirements": [
+                "按使用场景统计",
+                "按故障发生时间统计",
+                "按用户体重统计"
+              ]
+            },
+            "action_desc": "分析不同使用场景下脚托的受力情况和故障发生频率的关联"
+          }
+        ],
+        "final": null
+      },
+      "turn_id": 3
+    },
+    {
+      "role": "tool",
+      "tool_name": "query_operating_conditions",
+      "tool_args": {
+        "time_range": "2024-01-01至2024-04-23",
+        "vehicle_filter": "XX车型",
+        "metric_types": [
+          "脚托使用频率",
+          "脚托受力情况",
+          "座椅调节模式"
+        ],
+        "aggregation_requirements": [
+          "按使用场景统计",
+          "按故障发生时间统计",
+          "按用户体重统计"
+        ]
+      },
+      "tool_observation": {
+        "status": "ok",
+        "results": "工况数据分析结果：1)按使用场景统计：长途驾驶场景下脚托使用频率最高(平均每天8.2次)，城市驾驶场景下脚托受力最大(平均受力值65kg)；2)按故障发生时间统计：85%的故障发生在用户体重>75kg的情况下，故障高发时段为18:00-20:00；3)按用户体重统计：用户体重>80kg时，脚托机构平均受力增加40%，故障发生率是正常体重的3.2倍。座椅调节模式数据显示，电动调节模式下的脚托故障率比手动调节模式高2.1倍。",
+        "tool_results_summary": "数据分析显示脚托故障与用户体重、使用场景和座椅调节模式有显著关联，高体重用户在长途驾驶后使用电动调节模式时故障风险最高"
+      },
+      "turn_id": 4
+    },
+    {
+      "role": "assistant",
+      "inputs": {},
+      "assistant_output": {
+        "reasoning_summary": "基于历史案例和工况数据分析，座椅脚托收不回位问题主要与机械卡滞相关，且在高体重用户长途驾驶后使用电动调节模式时风险最高。为进一步确定具体失效机理，需要分析座椅脚托二连杆结构的受力情况，找出关键受力点和变形机理，为后续整改提供理论依据。",
+        "tool_plan": [
+          {
+            "tool_name": "analyze_domain_principles",
+            "tool_purpose": "分析座椅脚托二连杆结构的受力情况和失效机理",
+            "tool_args": {
+              "analysis_type": "受力分析",
+              "analysis_target": "座椅脚托二连杆结构",
+              "issue_description": "座椅脚托受力后变形导致无法收回",
+              "analysis_goal": "分析脚托受力路径和关键受力点"
+            },
+            "action_desc": "分析脚托在不同工况下的受力分布和变形机理，确定关键失效点"
+          }
+        ],
+        "final": null
+      },
+      "turn_id": 5
+    },
+    {
+      "role": "tool",
+      "tool_name": "analyze_domain_principles",
+      "tool_args": {
+        "analysis_type": "受力分析",
+        "analysis_target": "座椅脚托二连杆结构",
+        "issue_description": "座椅脚托受力后变形导致无法收回",
+        "analysis_goal": "分析脚托受力路径和关键受力点"
+      },
+      "tool_observation": {
+        "status": "ok",
+        "results": "座椅脚托二连杆结构受力分析结果：1)受力路径：用户体重主要通过座椅座垫传递至脚托连杆机构，再通过二连杆结构分散至车身固定点；2)关键受力点：二连杆连接处(承受约45%总载荷)、与座椅骨架连接处(承受约35%总载荷)、电机驱动端(承受约20%总载荷)；3)变形机理：当用户体重>75kg时，二连杆连接处应力超过材料屈服极限，导致塑性变形，使连杆机构卡滞；4)失效临界点：二连杆连接处在长期受力>60kg后出现累积损伤，变形量超过0.5mm时即导致无法正常收回。",
+        "tool_results_summary": "分析显示座椅脚托二连杆连接处是关键受力点和失效点，高体重用户使用时该部位应力超过材料承受极限导致塑性变形，是脚托无法收回的主要原因"
+      },
+      "turn_id": 6
+    },
+    {
+      "role": "assistant",
+      "inputs": {},
+      "assistant_output": {
+        "reasoning_summary": "基于前期分析，已确定座椅脚托收不回位的主要原因是二连杆连接处在高体重用户使用时应力超过材料承受极限导致塑性变形。现在需要验证改进后的脚托结构加强方案在极限工况下的可靠性，确保结构加强后能够解决变形问题，在300N和500N受力下仍能正常收回。",
+        "tool_plan": [
+          {
+            "tool_name": "get_experiment_results",
+            "tool_purpose": "验证改进后的脚托结构在极限工况下的可靠性",
+            "tool_args": {
+              "experiment_type": "验证性试验",
+              "experiment_target": "改进后的脚托结构",
+              "experiment_goal": "验证结构加强后脚托在极限工况下的可靠性",
+              "experiment_requirements": "按照文档中的测试条件进行，包括不同重量乘员的不同使用场景，测试脚托在300N和500N受力下的变形情况"
+            },
+            "action_desc": "测试改进后的脚托结构在不同受力情况下的变形和收回功能，验证加强方案的有效性"
+          }
+        ],
+        "final": null
+      },
+      "turn_id": 7
+    },
+    {
+      "role": "tool",
+      "tool_name": "get_experiment_results",
+      "tool_args": {
+        "experiment_type": "验证性试验",
+        "experiment_target": "改进后的脚托结构",
+        "experiment_goal": "验证结构加强后脚托在极限工况下的可靠性",
+        "experiment_requirements": "按照文档中的测试条件进行，包括不同重量乘员的不同使用场景，测试脚托在300N和500N受力下的变形情况"
+      },
+      "tool_observation": {
+        "status": "ok",
+        "results": "改进后脚托结构验证性试验结果：1)300N受力测试：在标准测试条件下，改进后的二连杆结构最大变形量为0.15mm，远低于原结构的0.8mm，变形恢复率为100%，所有测试样本均能正常收回；2)500N极限受力测试：改进结构在500N受力下最大变形量为0.28mm，仍低于允许变形量0.5mm的临界值，变形恢复率为98.5%，所有样本测试后均能正常收回；3)不同重量乘员测试：80kg、90kg、100kg体重乘员模拟测试中，脚托机构均未出现卡滞现象；4)长期耐久测试：经过5000次循环测试后，改进结构仍保持稳定性能，无疲劳损伤迹象。",
+        "tool_results_summary": "验证结果表明改进后的脚托结构加强方案有效，在300N和500N受力下变形量显著降低，所有测试样本均能正常收回，解决了原结构在高受力条件下的变形问题"
+      },
+      "turn_id": 8
+    },
+    {
+      "role": "assistant",
+      "inputs": {},
+      "assistant_output": {
+        "reasoning_summary": "基于历史案例查询、工况数据分析、受力分析和实验验证，已完成座椅脚托收不回位问题的全面分析。综合证据表明，该问题主要源于二连杆结构在高体重用户使用时的塑性变形，现有改进方案已通过实验验证。",
+        "tool_plan": [],
+        "final": {
+          "conclusion": "座椅脚托收不回位的主要原因是座椅脚托二连杆结构在高体重用户(>75kg)使用时，二连杆连接处应力超过材料承受极限导致塑性变形，使连杆机构卡滞。特别是长途驾驶后使用电动调节模式时风险最高。实验验证表明改进后的结构加强方案能有效解决这一问题，在300N和500N受力下变形量显著降低，所有测试样本均能正常收回。",
+          "evidence": [
+            "历史故障案例统计显示机械卡滞是主要原因(45%)，多数案例通过更换脚托连杆解决但存在15%复发率",
+            "实际使用工况数据显示用户体重>80kg时，脚托机构平均受力增加40%，故障发生率是正常体重的3.2倍",
+            "受力分析确认二连杆连接处承受45%总载荷，是关键受力点和失效点，长期受力>60kg后出现累积损伤",
+            "实验验证证明改进结构在300N和500N受力下变形量分别为0.15mm和0.28mm，均低于临界值0.5mm"
+          ],
+          "actions": [
+            "优化脚托结构设计：加强二连杆连接处结构，提高材料强度和刚度，确保变形量控制在0.3mm以内",
+            "改进装配工艺：确保关键连接点的装配精度，减少应力集中，提高连接可靠性",
+            "增加使用提示：向高体重用户提供使用建议，避免极限工况下的频繁使用，延长使用寿命",
+            "完善座椅控制逻辑：增加体重检测功能，对高体重用户自动调整脚托工作参数，降低故障风险"
+          ]
+        }
+      },
+      "turn_id": 9
+    }
+  ],
+  "labels": {
+    "outcome_type": "root_cause_hypothesis",
+    "requires_followup": true,
+    "safety_critical": true
+  }
+}

@@ -1,0 +1,52 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "query_case_history",
+      "description": "查询历史事故/投诉案例并返回相似度摘要。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "issue_keywords": {"type": "string", "description": "问题关键词或摘要。"},
+          "time_range": {"type": "string", "description": "检索时间范围。"},
+          "vehicle_model": {"type": "string", "description": "车型或平台代号。"}
+        },
+        "required": ["issue_keywords", "time_range"]
+      },
+      "return": {"type": "string", "description": "相似案例列表与关键结论摘要。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "fetch_telematics_logs",
+      "description": "拉取车辆遥测日志并汇总异常信号。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "vin_hash": {"type": "string", "description": "车辆标识（可脱敏）。"},
+          "time_range": {"type": "string", "description": "日志时间范围。"},
+          "signals": {"type": "array", "description": "需要检索的信号名称列表。", "items": {"type": "string"}}
+        },
+        "required": ["vin_hash", "time_range"]
+      },
+      "return": {"type": "string", "description": "日志检索结果与异常摘要。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "lookup_design_change",
+      "description": "查询相关模块的设计变更记录与影响说明。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subsystem": {"type": "string", "description": "子系统或模块名称。"},
+          "change_window": {"type": "string", "description": "变更时间范围。"}
+        },
+        "required": ["subsystem"]
+      },
+      "return": {"type": "string", "description": "设计变更摘要与可能影响。"}
+    }
+  }
+]

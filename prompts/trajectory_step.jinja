@@ -1,0 +1,51 @@
+你负责根据计划步骤生成一对助手/工具回合。
+
+【案件摘要】
+{{ case_summary }}
+
+【目标步骤】
+{{ plan_step }}
+
+【已有历史（最近若干 turn）】
+{{ history }}
+
+【工具清单（JSON Schema）】
+{{ tool_catalog }}
+
+【说明】
+- `is_first_step` = {{ is_first_step }}。若为 true，助手必须在 `inputs` 中携带 `instruction` 与 `available_tools`（值为完整工具 JSON Schema 数组）；若为 false，可将 `inputs` 设为空对象。
+- 本轮助手只能规划 `plan_step.tool_name` 指定的工具，不得追加其它工具。
+- 助手推理需引用案件事实，若需脱敏请使用明确的脱敏表述（例如“已脱敏”），避免占位符。
+
+【输出】
+请严格按照下面的 JSON 模板返回，不能出现额外文字：
+```json
+{
+  "assistant_turn": {
+    "role": "assistant",
+    "inputs": {},
+    "assistant_output": {
+      "reasoning_summary": "...",
+      "tool_plan": [
+        {
+          "tool_name": "...与 plan_step 一致...",
+          "tool_purpose": "...中文说明...",
+          "tool_args": {...},
+          "action_desc": "..."
+        }
+      ],
+      "final": null
+    }
+  },
+  "tool_turn": {
+    "role": "tool",
+    "tool_name": "...与 plan_step 一致...",
+    "tool_args": {...},
+    "tool_observation": {
+      "status": "ok",
+      "results" or "summary": "...",
+      "tool_results_summary": "..."
+    }
+  }
+}
+```

@@ -1,0 +1,40 @@
+你负责补齐排查步骤中的缺失信息，尽量保持与文档一致。
+
+输入：
+- 文档 ID：{{ document_id }}
+- 案例蓝图（JSON）：
+{{ outline }}
+- 文档片段：
+{{ excerpt }}
+- 工具清单（JSON Schema）：
+{{ tool_catalog }}
+- 现有步骤计划（JSON）：
+{{ step_plan }}
+
+请输出一个 JSON 对象，结构与步骤计划一致：
+```json
+{
+  "instruction": "...",
+  "steps": [
+    {
+      "goal": "...",
+      "tool_name": "...",
+      "tool_args": {"k": "v"},
+      "focus": "..."
+    }
+  ],
+  "final_requirements": {
+    "conclusion_focus": "...",
+    "evidence_hints": ["..."],
+    "action_items": ["..."]
+  }
+}
+```
+
+要求：
+- 仅允许补齐 `tool_args`；其他字段（instruction/goal/tool_name/focus/final_requirements）必须与输入 `step_plan` 完全一致，不得增删或改写。
+- `tool_name` 必须来自工具清单（tools[].function.name），不得新增工具。
+- 仅填写工具定义中必填参数（required）；非必填参数允许不填。
+- 不允许使用 `***` 作为占位符；未知时直接省略该参数。
+- 所有文本使用中文，输出必须是合法 JSON，不得添加额外说明或代码块。
+- 只输出 JSON 对象本身，键和值必须使用双引号。

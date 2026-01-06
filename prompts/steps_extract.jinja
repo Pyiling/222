@@ -1,0 +1,35 @@
+你是一名安全事件分析师，需要从文档中梳理排查步骤（允许信息不完整）。
+
+输入：
+- 文档 ID：{{ document_id }}
+- 案例蓝图（JSON）：
+{{ outline }}
+- 文档片段：
+{{ excerpt }}
+- 工具清单（JSON Schema）：
+{{ tool_catalog }}
+
+请输出一个 JSON 对象，结构如下：
+```json
+{
+  "instruction": "首轮助手要遵循的总体任务",
+  "steps": [
+    {
+      "goal": "本步要解决的核心问题",
+      "tool_name": "必须取自工具清单（tools[].function.name）",
+      "tool_args": {"k": "v"},
+      "focus": "该步推理的关注点"
+    }
+  ],
+  "final_requirements": {
+    "conclusion_focus": "最终总结需覆盖的方向",
+    "evidence_hints": ["..."],
+    "action_items": ["..."]
+  }
+}
+```
+
+约束：
+- steps 数量为 3-4，覆盖顺序：历史/共性 → 日志/信号 → 设计或策略 → 改进/验证。
+- 若信息缺失，可在 tool_args 中用 `***` 或 `unknown` 占位。
+- 所有文本使用中文，输出必须是合法 JSON。
