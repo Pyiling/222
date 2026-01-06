@@ -1,0 +1,3 @@
+iteration,n_d,n_a,lambda_sparse,gamma,n_steps,n_shared,max_epochs,batch_size,virtual_batch_size,learning_rate,scheduler_step_size
+1,27,5,0.001,1.0,6,3,512,32,32,0.0001,10.95121425050808
+2,9,61,0.001,1.0425137659749502,5,2,256,64,32,0.009543149065771642,36.63894835701323
