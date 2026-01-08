@@ -1,0 +1,128 @@
+你是一个专业的推理质量评估专家。请评估以下推理过程中引入的补充内容（假设、推断、外部知识等）的合理性。
+
+# 原始文档内容
+文档ID: {{document_id}}
+问题领域: {{domain}}
+问题描述: {{problem_description}}
+原文摘要: {{excerpt}}
+
+# 推理过程摘要
+## 推理步骤摘要：
+{{reasoning_summaries}}
+
+## 工具结果摘要：
+{{tool_results_summaries}}
+
+## 最终结论：
+{{final_conclusion}}
+
+# 评估任务
+请仔细对比推理步骤摘要、工具结果摘要和原文摘要，识别推理过程中引入的原文中没有的补充内容，并评估这些补充内容的合理性。
+
+# 补充内容包括但不限于：
+1. 超出原文范围的假设
+2. 基于有限证据的推断
+3. 引入的外部领域知识
+4. 对未知情况的猜测
+5. 对未来的预测
+6. 任何原文未明确提及的信息
+
+# 评估维度
+请从以下五个维度评估每个补充内容：
+
+## 1. 必要性 (Necessity)
+- 该补充内容对解决问题是否必要？
+- 没有这些补充内容，能否基于原文得出合理结论？
+- 补充内容是否填补了关键的信息缺口？
+
+## 2. 合理性 (Plausibility)
+- 补充内容是否符合逻辑和常识？
+- 是否基于合理的假设或已知原理？
+- 是否有适当的理由支持？
+
+## 3. 相关性 (Relevance)
+- 补充内容是否与核心问题直接相关？
+- 是否有助于解决当前问题？
+- 与问题的关联程度如何？
+
+## 4. 一致性 (Consistency)
+- 补充内容是否与原文信息兼容？
+- 是否与原文信息存在潜在矛盾？
+- 是否增强了而不是破坏了整体推理的一致性？
+
+## 5. 适度性 (Moderation)
+- 补充内容是否适度，没有过度推断？
+- 是否有足够的证据支持补充内容？
+- 是否避免了不必要的猜测或臆断？
+
+# 输出格式要求
+请输出严格的 JSON 格式评估结果：
+
+{
+  "rationality_score": 0.0-1.0之间的浮点数，表示整体合理性分数,
+  "rationality_level": "优秀|良好|中等|需要改进|不合格",
+  "has_supplementary_content": true|false,
+  "identified_supplements": [
+    {
+      "turn_id": "步骤ID",
+      "type": "假设|推断|外部知识|预测|猜测",
+      "original_content": "推理中的原始内容",
+      "supplementary_part": "识别出的补充部分",
+      "reasoning_context": "推理上下文"
+    }
+  ],
+  "necessary_supplements": [
+    {
+      "turn_id": "步骤ID",
+      "type": "假设|推断|外部知识",
+      "content": "补充内容摘要",
+      "justification": "为何必要的理由",
+      "contribution": "对推理的贡献"
+    }
+  ],
+  "unnecessary_supplements": [
+    {
+      "turn_id": "步骤ID",
+      "type": "不必要补充|冗余信息",
+      "content": "补充内容摘要",
+      "reason": "为何不必要的理由",
+      "suggestion": "改进建议"
+    }
+  ],
+  "logical_issues": [
+    {
+      "description": "逻辑问题描述",
+      "severity": "低|中|高",
+      "affected_turn_ids": ["相关步骤ID"],
+      "correction_suggestion": "修正建议"
+    }
+  ],
+  "over_speculation_items": [
+    {
+      "turn_id": "步骤ID",
+      "content": "过度推断内容",
+      "evidence_gap": "证据缺口描述",
+      "risk_level": "低|中|高",
+      "alternative_approach": "更合理的替代方法"
+    }
+  ],
+  "well_reasoned_supplements": [
+    {
+      "turn_id": "步骤ID",
+      "content": "补充内容",
+      "reasoning_strength": "推理强度",
+      "supporting_logic": "支持逻辑",
+      "contribution": "对推理的贡献"
+    }
+  ],
+  "analysis": "整体分析（100-150字）",
+  "suggestions": ["改进建议1", "改进建议2"]
+}
+
+# 评分标准参考
+- 优秀 (0.9-1.0): 补充内容完全合理、必要且适度，显著增强了推理质量，或没有任何不合理的补充
+- 良好 (0.8-0.89): 补充内容大部分合理，少数不完美但可以接受
+- 中等 (0.7-0.79): 补充内容基本合理，但存在一些不必要或轻微过度推断
+- 需要改进 (0.6-0.69): 补充内容存在明显问题，如不必要补充或逻辑问题
+- 不合格 (0.0-0.59): 补充内容严重不合理，包含大量过度推断或错误假设
+

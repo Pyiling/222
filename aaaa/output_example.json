@@ -1,0 +1,201 @@
+{
+  "id": "case_000123",
+  "domain": "auto_safety_incident",
+  "language": "zh",
+  "meta": {
+    "source": "li_auto_internal",
+    "created_at": "2025-12-16",
+    "privacy_level": "restricted",
+    "redaction": ["vin", "plate", "owner_phone"]
+  },
+  "problem": {
+    "title": "高速行驶中AEB误触发",
+    "user_report": "车主反馈在高速超车时车辆突然急刹，仪表提示AEB介入。",
+    "context": {
+      "vehicle_model": "L9",
+      "software_version": "ADAS_3.2.1",
+      "environment": "夜间/微雨/高速",
+      "timestamp": "2025-11-02T21:13:22+08:00"
+    }
+  },
+
+  "tools": [
+    {
+      "name": "query_incident_db",
+      "description": "查询事故/投诉/日志索引库",
+      "args_schema": {"vin_hash":"string","time_range":"string","keywords":"string"}
+    },
+    {
+      "name": "fetch_vehicle_logs",
+      "description": "拉取车辆关键日志片段（脱敏后）",
+      "args_schema": {"vin_hash":"string","start_ts":"string","end_ts":"string","signals":"array"}
+    },
+    {
+      "name": "search_design_docs",
+      "description": "检索设计文档/需求/变更记录",
+      "args_schema": {"query":"string","project":"string","version":"string"}
+    },
+    {
+      "name": "request_engineering_test",
+      "description": "创建工程实验/复现工单",
+      "args_schema": {"test_goal":"string","hypothesis":"string","setup":"string","priority":"string"}
+    }
+  ],
+
+  "trajectory": [
+    {
+      "turn_id": 1,
+      "role": "assistant",
+      "inputs": {
+        "instruction": "基于车主反馈，定位AEB误触发原因，给出结论与建议。",
+        "available_tools": ["query_incident_db","fetch_vehicle_logs","search_design_docs","request_engineering_test"]
+      },
+      "assistant_output": {
+        "reasoning_summary": "需要先确认是否存在同类案例与该车当时的传感器/融合输出异常，再对照AEB触发逻辑与版本变更记录定位根因。",
+        "tool_plan": [
+          {
+            "tool_name": "query_incident_db",
+            "tool_purpose": "查找同版本/同场景的相似投诉与已知问题条目",
+            "tool_args": {"vin_hash":"***","time_range":"2025-11-01~2025-11-03","keywords":"AEB 误触发 高速 微雨 夜间"},
+            "action_desc": "查询 2025-11-01~2025-11-03 期间的所有夜间微雨环境下高速超车时AEB误触发的事故记录"
+          }
+        ],
+        "final": null
+      }
+    },
+
+    {
+      "turn_id": 2,
+      "role": "tool",
+      "tool_name": "query_incident_db",
+      "tool_args": {"vin_hash":"***","time_range":"2025-11-01~2025-11-03","keywords":"AEB 误触发 高速 微雨 夜间"},
+      "tool_observation": {
+        "status": "ok",
+        "results": [
+          {"case_id":"INC_7781","similarity":0.82,"note":"同版本夜间雨天，前向雷达虚警", "img_url": "http://INC_7781.jpg"},
+          {"case_id":"INC_7810","similarity":0.77,"note":"高速超车并线，视觉误检护栏阴影", "img_url": "http://INC_7810.jpg"}
+        ],
+        "latency_ms": 120,
+        "tool_results_summary": "事故库中检索到多个高度相似案例：同版本在夜间雨天场景下存在前向雷达近距虚警导致AEB触发的记录，且亦有高速并线时因环境干扰（如护栏阴影）引发感知误判的先例，说明该问题具有一定版本与场景共性。"
+      }
+    },
+
+    {
+      "turn_id": 3,
+      "role": "assistant",
+      "assistant_output": {
+        "reasoning_summary": "已存在相似案例，下一步需要拉取该车触发前后关键信号，判断是雷达虚警还是视觉/融合误判导致AEB触发。",
+        "tool_plan": [
+          {
+            "tool_name": "fetch_vehicle_logs",
+            "tool_purpose": "获取触发窗口内AEB触发条件相关信号",
+            "tool_args": {
+              "vin_hash":"***",
+              "start_ts":"2025-11-02T21:13:05+08:00",
+              "end_ts":"2025-11-02T21:13:35+08:00",
+              "signals":["aeb_state","ttc","fusion_obj_count","radar_conf","vision_conf","vehicle_speed","brake_cmd"]
+            },
+            "action_desc": "拉取AEB触发前后30秒内的关键决策与感知信号，用于分析TTC跌破原因及雷达/视觉/融合置信度变化"
+          }
+        ],
+        "final": null
+      }
+    },
+
+    {
+      "turn_id": 4,
+      "role": "tool",
+      "tool_name": "fetch_vehicle_logs",
+      "tool_args": {"vin_hash":"***","start_ts":"...","end_ts":"...","signals":["..."]},
+      "tool_observation": {
+        "status": "ok",
+        "summary": {
+          "aeb_state": "triggered",
+          "ttc_min": 0.7,
+          "vehicle_speed_kph": 108,
+          "fusion_obj_count_peak": 7,
+          "radar_conf_spike": true,
+          "vision_conf_stable": true,
+          "brake_cmd_peak": 0.62
+        },
+        "notable_events": [
+          {"t":"+2.1s","event":"radar_conf 从0.2跃升到0.9，新增前向近距目标"},
+          {"t":"+2.4s","event":"ttc跌破阈值，AEB触发"}
+        ],
+        "tool_results_summary": "车辆日志显示AEB确实被触发，触发时车速约108 km/h，TTC最低降至0.7 s；期间雷达置信度出现明显突增，而视觉置信度保持稳定，融合目标数量短时上升，制动指令峰值达0.62，整体特征更符合雷达虚警驱动的触发模式。"
+      }
+    },
+
+    {
+      "turn_id": 5,
+      "role": "assistant",
+      "assistant_output": {
+        "reasoning_summary": "日志显示雷达置信度突增并驱动TTC跌破阈值，倾向雷达虚警/融合策略问题；需要对照AEB触发逻辑与该版本雷达滤波/融合改动记录。",
+        "tool_plan": [
+          {
+            "tool_name": "search_design_docs",
+            "tool_purpose": "确认ADAS_3.2.1是否有雷达滤波/融合或AEB阈值变更",
+            "tool_args": {"query":"ADAS_3.2.1 radar filter fusion AEB threshold change", "project":"ADAS", "version":"3.2.1"},
+            "action_desc": "检索ADAS_3.2.1版本中与雷达回波滤波、融合策略或AEB触发阈值相关的设计变更记录，确认是否存在潜在策略回归"
+          }
+        ],
+        "final": null
+      }
+    },
+
+    {
+      "turn_id": 6,
+      "role": "tool",
+      "tool_name": "search_design_docs",
+      "tool_args": {"query":"...","project":"ADAS","version":"3.2.1"},
+      "tool_observation": {
+        "status": "ok",
+        "hits": [
+          {"doc_id":"DOC_2231","title":"3.2.1 雷达近距目标滤波策略调整","snippet":"雨天场景保留更多近距回波以减少漏检..."},
+          {"doc_id":"CR_991","title":"AEB TTC阈值微调说明","snippet":"高速工况阈值下调0.1s以提高制动提前量..."}
+        ],
+        "tool_results_summary": "设计文档表明ADAS 3.2.1版本在雨天场景下调整了雷达近距目标滤波策略以保留更多回波，同时对高速工况下的AEB TTC阈值进行了下调，这两项改动叠加可能降低了误触发门限，增加了雨天高速场景下的AEB触发概率。"
+      }
+    },
+
+    {
+      "turn_id": 7,
+      "role": "assistant",
+      "assistant_output": {
+        "reasoning_summary": "文档提示雨天保留更多近距回波 + TTC阈值更激进，叠加更易触发；仍需工程复现实验验证雨天回波虚警路径与触发门限组合效应。",
+        "tool_plan": [
+          {
+            "tool_name": "request_engineering_test",
+            "tool_purpose": "在雨天/夜间/高速并线场景复现雷达虚警触发链路，验证策略改动的因果性",
+            "tool_args": {
+              "test_goal":"复现AEB误触发并定位触发条件",
+              "hypothesis":"3.2.1雨天回波保留+TTC阈值下调导致雷达虚警更易触发AEB",
+              "setup":"夜间微雨，高速100-120kph，并线/超车，记录雷达回波与融合目标",
+              "priority":"P0"
+            },
+            "action_desc": "发起P0级工程复现实验，在夜间微雨高速并线场景下验证雷达虚警、TTC阈值与AEB触发之间的因果关系"
+          }
+        ],
+        "final": {
+          "conclusion": "该事件更可能由雷达近距虚警引起，3.2.1在雨天场景的回波保留策略与更激进的TTC阈值使AEB触发概率上升。",
+          "evidence": [
+            "触发前雷达置信度突增、视觉稳定，TTC快速跌破阈值",
+            "同版本同场景存在相似案例",
+            "设计文档记录雨天滤波与TTC阈值调整"
+          ],
+          "actions": [
+            "短期：对该车推送风险提示/收集更多日志；必要时回退或热修复阈值策略",
+            "中期：优化雨天雷达虚警抑制与融合一致性判定（与视觉交叉验证）",
+            "验证：按P0工单复现实验，确认触发链路并量化阈值贡献"
+          ]
+        }
+      }
+    }
+  ],
+
+  "labels": {
+    "outcome_type": "root_cause_hypothesis",
+    "requires_followup": true,
+    "safety_critical": true
+  }
+}

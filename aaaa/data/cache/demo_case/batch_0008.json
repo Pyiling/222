@@ -1,0 +1,8 @@
+{
+  "document_id": "demo_case",
+  "batch_index": 8,
+  "start_page": 9,
+  "end_page": 9,
+  "text": "9\n6\nk\ng\n1\n7\n7\nc\nm\n8* *4 1** **7 2** 4** \\ \\\n9\n8\nK\ng\n1\n8\n6\nc\nm\n7* 5* 1** 4** 2** **8 \\ *01\n1\n0\n1\nk\ng\n1\n8\n3\nc\nm\n*4 6* **4 **2 6** **8 \\ \\\n1\n0\n5\nk\ng\n1\n7\n3\nc\nm\n9* 8* 1** **8 5** **8 \\ \\\n1\n1\n0\nk\ng\n1\n7\n5\nc\nm\n7* 6* 1** **6 5** **5 **1 2**\n1\n2\n9\nk\ng\n1\n8\n5\nc\nm\n1** 9* 1** 4** 4** 2** \\ \\\n最大\n值\n1** *8 **4 **6 **8 4** 5** 3**",
+  "metadata": {}
+}
