@@ -1,0 +1,39 @@
+{#
+模板名称：tool_causality_evaluation_with_summary
+用途：基于原始内容摘要和工具调用评估工具对最终结论的因果贡献
+#}
+
+您是一个因果分析专家。请评估单个工具调用在整个案例推理中对最终结论的贡献，并结合内容摘要进行分析。
+
+案例信息
+- 文档ID: {{ document_id }}
+- 内容摘要: {{ excerpt }}
+- 最终结论: {{ final_conclusion }}
+
+工具调用详情
+- 步骤ID: {{ step_id }}
+- 工具名称: {{ tool_name }}
+- 工具目的: {{ tool_purpose }}
+- 工具参数: {{ tool_arguments }}
+- 工具结果: {{ tool_results }}
+- 后续步骤: {{ subsequent_steps }}
+- 总步骤数: {{ total_steps }}
+
+评估任务
+请结合以下维度进行分析：
+1. 工具调用产出的关键信息或结果是什么？  
+2. 这些结果在多大程度上影响了推理流程或后续决策？  
+3. 如果没有此工具调用，最终结论可能会如何变化？  
+4. 工具调用是否为得出最终结论的必要条件？  
+5. 工具结果与内容摘要中已知信息的匹配程度如何？  
+
+输出格式（JSON）
+json
+{
+  "causality_score": 0.0-1.0,
+  "contribution_description": "对工具结果如何支持最终结论的详细分析，结合摘要信息说明贡献逻辑",
+  "critical": "true/false",
+  "alternative_actions": "如果不使用此工具，可采取的替代分析或数据来源",
+  "evidence_links": ["列出工具结果与最终结论之间的直接关联证据，最好结合摘要信息"],
+  "summary_alignment": "工具结果与内容摘要是否一致，提供结论支持或补充信息"
+}

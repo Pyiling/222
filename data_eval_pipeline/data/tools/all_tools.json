@@ -1,0 +1,141 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "query_operating_conditions",
+      "description": "查询车辆工况数据并按指定维度统计，用于分析故障/操作指标。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "time_range": {"type": "string", "description": "时间范围或统计周期描述。"},
+          "vehicle_filter": {"type": "string", "description": "车辆筛选条件（VIN/车型/属性/规则）。"},
+          "metric_types": {"type": "array", "description": "工况指标类型列表。", "items": {"type": "string"}},
+          "aggregation_requirements": {"type": "array", "description": "统计维度与输出要求。", "items": {"type": "string"}}
+        },
+        "required": ["time_range", "vehicle_filter"]
+      },
+      "return": {"type": "string", "description": "工况数据查询结果与统计摘要。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "query_historical_issues",
+      "description": "查询历史相关问题/售后案例，返回统计与明细。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query_goal": {"type": "string", "description": "查询目标或用途。"},
+          "target_object": {"type": "string", "description": "故障关联对象（部件/模块/系统）。"},
+          "symptom": {"type": "string", "description": "故障现象描述。"},
+          "query_dimensions": {"type": "array", "description": "查询维度/筛选条件。", "items": {"type": "string"}}
+        },
+        "required": ["query_goal", "target_object"]
+      },
+      "return": {"type": "string", "description": "历史问题查询结果与案例摘要。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "retrieve_domain_knowledge",
+      "description": "检索研发/制造/供应/标杆等维度的知识与信息。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "retrieval_goal": {"type": "string", "description": "检索目标或用途。"},
+          "dimension": {"type": "string", "description": "检索维度，如研发/制造/供应/标杆。"},
+          "items": {"type": "array", "description": "具体检索事项列表。", "items": {"type": "string"}}
+        },
+        "required": ["retrieval_goal"]
+      },
+      "return": {"type": "string", "description": "检索事项结果与关键信息摘要。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "on_site_investigation",
+      "description": "现场排查并验证核心事项，输出逐项排查结果与备注。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "investigation_goal": {"type": "string", "description": "排查目标或需验证的核心问题。"},
+          "investigation_target": {"type": "string", "description": "排查对象，如故障件/工序/设备/人员/整车/零部件。"},
+          "reference_basis": {"type": "array", "description": "排查依据，如图纸/工艺/质量标准/检验规范/历史案例。", "items": {"type": "string"}},
+          "validation_items": {"type": "array", "description": "待验证核心事项列表。", "items": {"type": "string"}}
+        },
+        "required": ["investigation_target"]
+      },
+      "return": {"type": "string", "description": "核心事项排查结果与备注信息。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "analyze_domain_principles",
+      "description": "进行专业原理分析并输出推导结论。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "analysis_type": {"type": "string", "description": "分析类型，如受力分析/失效机理分析。"},
+          "analysis_target": {"type": "string", "description": "分析对象或结构/物质组合。"},
+          "issue_description": {"type": "string", "description": "核心问题或故障现象描述。"},
+          "analysis_goal": {"type": "string", "description": "指定分析目标，如受力路径/失效机制。"}
+        },
+        "required": ["analysis_type", "analysis_target"]
+      },
+      "return": {"type": "string", "description": "分析结论与推导摘要。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_experiment_results",
+      "description": "获取实验结果并汇总实验数据或结论。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "experiment_type": {"type": "string", "description": "实验类型，如复现实验/验证性试验/对比分析实验。"},
+          "experiment_target": {"type": "string", "description": "实验对象或物料。"},
+          "experiment_goal": {"type": "string", "description": "实验目的或待验证假设。"},
+          "experiment_requirements": {"type": "string", "description": "明确实验基础约束与结果判定依据，如环境条件/样本要求/操作规范/判定标准，确保实验可落地"}
+        },
+        "required": ["experiment_type", "experiment_target"]
+      },
+      "return": {"type": "string", "description": "实验结果与关键数据。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "propose_mitigation_actions",
+      "description": "基于具体故障原因制定整改措施方案。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "root_cause": {"type": "string", "description": "具体故障原因。"}
+        },
+        "required": ["root_cause"]
+      },
+      "return": {"type": "string", "description": "整改方案措施列表。"}
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "insert_information",
+      "description": "插入指定信息条目并输出对应结果。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "insert_goal": {"type": "string", "description": "插入目标或用途。"},
+          "items": {"type": "array", "description": "具体插入信息条目列表。", "items": {"type": "string"}},
+          "context": {"type": "string", "description": "上文内容或上下文。"}
+        },
+        "required": ["insert_goal"]
+      },
+      "return": {"type": "string", "description": "插入信息结果，与条目逐一对应。"}
+    }
+  }
+]

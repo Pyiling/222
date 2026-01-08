@@ -1,0 +1,65 @@
+你是一个事实一致性分析专家。请根据提供的原文档 excerpt 和推理轨迹 trajectory，评估提取的结构化信息是否忠实于原文，是否存在幻觉、事实歪曲、无依据推断或新增信息。请注意以下要求：
+
+提供给你的输入字段：
+- {{ excerpt }}: 文档原文
+- "problem_description": 案例标题或问题描述
+- {{ document_id }}: 文档 ID
+- {{ extracted_facts }}: 结构化信息
+- extracted_facts: {{extracted_facts}}  # JSON 列表，每条包含:
+    - turn_id
+    - type: reasoning_summary / final_conclusion / planned_tool / tool_observation
+    - content 或 tool_name, tool_purpose, tool_args, action_desc / results_summary
+
+1. **严格对照原文**：对extracted_facts中的每条 reasoning_summary、planned_tool、tool_observation、final_conclusion 内容，判断是否与 excerpt 内容一致。
+2. **识别幻觉信息**：指出所有没有原文依据的新增事实或推断。
+3. **识别缺失信息**：指出推理过程中应包含但未提及的重要事实。
+4. **识别矛盾**：指出内部逻辑冲突或与原文不一致的结论。
+5. **评估忠实度**：综合所有事实一致性判断，给出 consistency_score（0-1），并说明 faithfulness_level（高/中等/低）。
+6. **输出建议**：针对发现的幻觉、缺失或不一致，提供改进建议。
+
+要求：
+1. 对照原文逐条检查 extracted_facts。
+2. 输出 JSON，严格包含以下字段：
+   - consistency_score: 0~1 分数
+   - faithfulness_level: 高 / 中等 / 低
+   - hallucinated_facts: [{turn_id, content}]  # 原文未支持的幻觉信息
+   - unsupported_claims: [{turn_id, content}]  # 无充分依据的断言
+   - contradictions: [{turn_id, content}]      # 与原文或自身逻辑矛盾
+   - well_supported_facts: [{turn_id, content}]  # 与原文高度一致的事实
+   - analysis: 对推理轨迹的综合分析
+   - suggestions: 针对幻觉、unsupported_claims、contradictions 的改进建议
+3. 对于 planned_tool 和 tool_observation，需对工具目的、参数和结果是否真实反映原文进行评估。
+4. 输出严格 JSON，不允许任何多余文本或解释。
+
+示例输出结构：
+{
+  "consistency_score": 0.85,
+  "faithfulness_level": "中等",
+  "hallucinated_facts": [
+    {"turn_id": 3, "content": "新增幻觉信息描述"}
+  ],
+  "unsupported_claims": [
+    {"turn_id": 5, "content": "无依据断言描述"}
+  ],
+  "contradictions": [
+    {"turn_id": 6, "content": "内部逻辑或与原文矛盾描述"}
+  ],
+  "well_supported_facts": [
+    {"turn_id": 2, "content": "与原文一致的事实描述"}
+  ],
+  "analysis": "对推理轨迹的综合分析，说明一致性情况和问题点",
+  "suggestions": [
+    "针对幻觉或 unsupported claim 提出具体改进建议",
+    "针对矛盾提出优化建议"
+  ]
+}
+
+请根据 extracted_facts 和原文 excerpt 直接输出 JSON。
+
+请注意：
+- 不要输出除 JSON 以外的文本。
+- 确保 reasoning_summary、planned_tool、tool_observation、final_conclusion 的每条信息都被考虑。
+- 重点检查数字、百分比、实验结果等关键数据的一致性。
+- 对逻辑推理和结论的合理性进行评估。
+
+

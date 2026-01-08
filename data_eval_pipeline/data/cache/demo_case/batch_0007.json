@@ -1,0 +1,8 @@
+{
+  "document_id": "demo_case",
+  "batch_index": 7,
+  "start_page": 8,
+  "end_page": 8,
+  "text": "图示\n 伸\n懒\n腰.\nmp\n4\n调\n整\n坐\n姿.\nmp\n4\n紧\n急\n下\n车.\nmp\n4\n急刹\n车\n（未\n系安\n全\n带）\n）.m\np4\n急刹\n车\n（系\n安全\n带）\n）.m\np4\n人脚\n受力\n斜上\n后，\n不方\n便身\n体前\n倾，\n无此\n场景\n场景\n8：电\n机堵转\n扭矩\n**Nm\n计算，\n脚托端\n部受力\n在\n***~***\nN 之间\n7\n3\nk\ng\n1\n9\n0\nc\nm\n6* *5 **5 3** 2** 3** **3 **8 实测\n4**\n7\n8\nk\ng\n1\n6\n9\nc\nm\n6* 5* 7** **8 **9 2** 2** **0\n8\n7\nk\ng\n1\n7\n9\nc\nm\n*5 6*.\n*\n1** **0 2** **3 **6.* 4**\n8\n4\nk\ng\n1\n8\n2\nc\nm\n1** *4 1** 7** 3** 3** **5 *86\n9\n4\nk\ng\n1\n7\n5\nc\nm\n*5 7* 1** 7** **0 **0 \\ \\",
+  "metadata": {}
+}
